@@ -1,7 +1,6 @@
-package com.timelymd.timelymd_api.BillingItem;
+package com.timelymd.timelymd_api.billing;
 
-import com.timelymd.timelymd_api.Billing.Billing;
-import com.timelymd.timelymd_api.Service.Service;
+import com.timelymd.timelymd_api.service.Service;
 import jakarta.persistence.*;
 import lombok.*;
 

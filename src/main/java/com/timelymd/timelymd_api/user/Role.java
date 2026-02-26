@@ -1,4 +1,4 @@
-package com.timelymd.timelymd_api.User;
+package com.timelymd.timelymd_api.user;
 
 public enum Role {
     OWNER,

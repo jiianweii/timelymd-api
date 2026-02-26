@@ -1,6 +1,6 @@
-package com.timelymd.timelymd_api.Service;
+package com.timelymd.timelymd_api.service;
 
-import com.timelymd.timelymd_api.Clinic.Clinic;
+import com.timelymd.timelymd_api.clinic.Clinic;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
