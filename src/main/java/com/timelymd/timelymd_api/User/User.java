@@ -20,8 +20,6 @@ public class User {
     private String name;
     @NotBlank
     private String email;
-    @NotBlank
-    private String password;
 
     @NonNull
     @Enumerated(EnumType.STRING)
