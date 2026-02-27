@@ -10,7 +10,8 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "users")
-public class User {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,8 +20,31 @@ public class User {
     private String name;
     @NotBlank
     private String email;
+    @NotBlank
+    private String profileUrl;
 
-    @NonNull
+    @Column(unique = true, nullable = false)
+    private String supabaseUserId;
+
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Doctor doctorProfile;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Staff staffProfile;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Owner ownerProfile;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Patient patientProfile;
+
+    // Helper methods to check role
+    public boolean isDoctor() { return role == Role.DOCTOR; }
+    public boolean isStaff() { return role == Role.STAFF; }
+    public boolean isOwner() { return role == Role.OWNER; }
+    public boolean isPatient() { return role == Role.PATIENT; }
+
 }

@@ -1,11 +1,17 @@
 package com.timelymd.timelymd_api.clinic;
 
+import com.timelymd.timelymd_api.appointment.Appointment;
 import com.timelymd.timelymd_api.service.Service;
+import com.timelymd.timelymd_api.user.Doctor;
+import com.timelymd.timelymd_api.user.Owner;
+import com.timelymd.timelymd_api.user.Staff;
 import com.timelymd.timelymd_api.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -19,24 +25,31 @@ public class Clinic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
     private String name;
-    @NotEmpty
     private String address;
-    @NotEmpty
-    private String imageUrl;
+    private String phone;
+    private String email;
 
-    @NonNull
-    @ManyToOne
-    @JoinColumn(name = "userId")
-    private User owner;
+    // Owner relationship (one-to-one since one clinic has one owner)
+    @OneToOne
+    @JoinColumn(name = "owner_id", unique = true)
+    private Owner owner;  // Each clinic has exactly ONE owner
 
-    @NonNull
-    @ManyToMany(fetch = FetchType.LAZY)
+    // Staff and Doctors
+    @OneToMany(mappedBy = "clinic")
+    private List<Doctor> doctors = new ArrayList<>();
+
+    @OneToMany(mappedBy = "clinic")
+    private List<Staff> staffs = new ArrayList<>();
+
+    @OneToMany(mappedBy = "clinic")
+    private List<Appointment> appointments = new ArrayList<>();
+
+    @ManyToMany
     @JoinTable(
-            name = "clinicService",
-            joinColumns = @JoinColumn(name = "clinicId"),
-            inverseJoinColumns = @JoinColumn(name = "serviceId")
+            name = "clinic_services",  // join table
+            joinColumns = @JoinColumn(name = "clinic_id"),  // this is the owner
+            inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    private Set<Service> services;
+    private List<Service> services = new ArrayList<>();
 }

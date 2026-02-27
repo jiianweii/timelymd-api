@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
+import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
 @Setter
@@ -16,7 +18,7 @@ import java.util.Set;
 public class Service {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
 
     @NotEmpty
@@ -26,11 +28,8 @@ public class Service {
     private String description;
 
     @NotEmpty
-    private Double price;
+    private BigDecimal price;
 
-    @NonNull
-    @ManyToMany(mappedBy = "services", fetch = FetchType.LAZY)
-    private Set<Clinic> clinic;
-
-
+    @ManyToMany(mappedBy = "services",fetch = FetchType.LAZY)
+    private Set<Clinic> clinics = new HashSet<>();
 }

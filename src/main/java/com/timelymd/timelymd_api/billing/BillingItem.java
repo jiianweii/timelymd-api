@@ -3,6 +3,8 @@ package com.timelymd.timelymd_api.billing;
 import com.timelymd.timelymd_api.service.Service;
 import jakarta.persistence.*;
 import lombok.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Getter
 @Setter
@@ -20,20 +22,36 @@ public class BillingItem {
     private Billing billing;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "serviceId")
+    @JoinColumn(name = "service_id")
     private Service service;
 
     private String description;
 
-    private Integer quantity;
+    @Column(nullable = false)
+    private Integer quantity = 1;
 
-    private Double unitPrice;
+    @Column(precision = 10, scale = 2)
+    private BigDecimal unitPrice = BigDecimal.ZERO;
 
-    private Double amount;  // quantity * unitPrice
+    @Column(precision = 10, scale = 2)
+    private BigDecimal amount = BigDecimal.ZERO;  // quantity * unitPrice
 
     @PrePersist
     @PreUpdate
     private void calculateAmount() {
-        this.amount = quantity * unitPrice;
+        if (quantity != null && unitPrice != null) {
+            this.amount = BigDecimal.valueOf(quantity)
+                    .multiply(unitPrice)
+                    .setScale(2, RoundingMode.HALF_UP);
+        }
+    }
+
+    // Convenience constructor
+    public BillingItem(Service service, Integer quantity) {
+        this.service = service;
+        this.description = service.getName();
+        this.quantity = quantity;
+        this.unitPrice = service.getPrice(); // Assuming Service now uses BigDecimal
+        calculateAmount();
     }
 }
